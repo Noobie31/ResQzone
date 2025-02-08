@@ -1,9 +1,9 @@
 const EmergencyContacts = () => {
   const contacts = [
-    { name: "Emergency Services", number: "911" },
-    { name: "Fire Department", number: "555-1234" },
-    { name: "Police Department", number: "555-5678" },
-    { name: "Medical Emergency", number: "555-9101" },
+    { name: "Emergency Services", number: "101" },
+    { name: "Fire Department", number: "112" },
+    { name: "Police Department", number: "100" },
+    { name: "Medical Emergency", number: "108" },
   ]
 
   return (

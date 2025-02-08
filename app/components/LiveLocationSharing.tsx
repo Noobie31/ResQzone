@@ -32,7 +32,7 @@ const LiveLocationSharing = () => {
   }
 
   return (
-    <div className="h-64 w-full">
+    <div className="h-64 w-full -z-10">
       <MapContainer center={position} zoom={13} style={{ height: "100%", width: "100%" }}>
         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
         <Marker position={position}>

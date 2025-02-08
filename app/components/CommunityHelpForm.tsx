@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 
-const CommunityHelpForm = () => {
+const CommunityHelpForm = ({ setHelpRequests }) => {
   const [formData, setFormData] = useState({
     type: "Food",
     description: "",
@@ -17,8 +17,11 @@ const CommunityHelpForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    // Simulating API call
-    await new Promise((resolve) => setTimeout(resolve, 1000))
+    const newRequest = { id: Date.now(), ...formData, status: "Open" }
+
+    // Update the list with the new request
+    setHelpRequests((prevRequests) => [newRequest, ...prevRequests])
+
     alert("Help request submitted successfully!")
     setFormData({
       type: "Food",
@@ -32,9 +35,7 @@ const CommunityHelpForm = () => {
     <form onSubmit={handleSubmit} className="bg-white p-4 rounded-lg shadow">
       <h2 className="text-xl font-semibold mb-2">Request Help</h2>
       <div className="mb-4">
-        <label htmlFor="type" className="block mb-2">
-          Type of Help Needed
-        </label>
+        <label htmlFor="type" className="block mb-2">Type of Help Needed</label>
         <select
           id="type"
           name="type"
@@ -50,9 +51,7 @@ const CommunityHelpForm = () => {
         </select>
       </div>
       <div className="mb-4">
-        <label htmlFor="description" className="block mb-2">
-          Description
-        </label>
+        <label htmlFor="description" className="block mb-2">Description</label>
         <textarea
           id="description"
           name="description"
@@ -64,9 +63,7 @@ const CommunityHelpForm = () => {
         ></textarea>
       </div>
       <div className="mb-4">
-        <label htmlFor="location" className="block mb-2">
-          Location
-        </label>
+        <label htmlFor="location" className="block mb-2">Location</label>
         <input
           type="text"
           id="location"
@@ -78,9 +75,7 @@ const CommunityHelpForm = () => {
         />
       </div>
       <div className="mb-4">
-        <label htmlFor="contact" className="block mb-2">
-          Contact Information
-        </label>
+        <label htmlFor="contact" className="block mb-2">Contact Information</label>
         <input
           type="text"
           id="contact"
@@ -99,4 +94,3 @@ const CommunityHelpForm = () => {
 }
 
 export default CommunityHelpForm
-
