@@ -8,9 +8,33 @@ import L from "leaflet"
 // Fix for default marker icon
 delete (L.Icon.Default.prototype as any)._getIconUrl
 L.Icon.Default.mergeOptions({
-  iconRetinaUrl: "/marker-icon-2x.png",
-  iconUrl: "/marker-icon.png",
-  shadowUrl: "/marker-shadow.png",
+  iconRetinaUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png",
+  iconUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
+  shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
+})
+
+// Custom icons
+const safeZoneIcon = new L.Icon({
+  iconUrl: "https://img.icons8.com/emoji/48/check-mark-emoji.png",
+  iconSize: [32, 32],
+})
+
+const foodShelterIcon = new L.Icon({
+  iconUrl: "https://img.icons8.com/color/48/restaurant.png",
+  iconSize: [32, 32],
+})
+
+const medicalCampIcon = new L.Icon({
+  iconUrl: "https://img.icons8.com/color/48/hospital.png", // Reliable hospital icon
+  iconSize: [32, 32], // Size of the icon
+  iconAnchor: [16, 32], // Adjusting anchor point
+  popupAnchor: [0, -32], // Popup positioning
+})
+
+
+const sosIcon = new L.Icon({
+  iconUrl: "https://img.icons8.com/fluency/48/sos.png",
+  iconSize: [40, 40],
 })
 
 const Map = () => {
@@ -21,29 +45,41 @@ const Map = () => {
     floodLevels: [],
     sosAlerts: [],
   })
+  const [showFloodLevels, setShowFloodLevels] = useState(false)
 
   useEffect(() => {
-    // Simulating fetching map data
+    // Simulated data fetching (Replace with actual API call)
     const fetchMapData = async () => {
-      // Replace this with actual API call
       const data = {
         safeZones: [
-          { id: 1, lat: 51.505, lng: -0.09, name: "Safe Zone 1" },
-          { id: 2, lat: 51.51, lng: -0.1, name: "Safe Zone 2" },
+          { id: 1, lat: 13.085, lng: 80.27, name: "Safe Zone 1" },
+          { id: 2, lat: 13.09, lng: 80.275, name: "Safe Zone 2" },
         ],
         foodShelters: [
-          { id: 1, lat: 51.515, lng: -0.095, name: "Food Shelter 1" },
-          { id: 2, lat: 51.52, lng: -0.105, name: "Food Shelter 2" },
+          { id: 1, lat: 13.08, lng: 80.26, name: "Food Shelter 1" },
+          { id: 2, lat: 13.075, lng: 80.285, name: "Food Shelter 2" },
+          { id: 3, lat: 13.07, lng: 80.295, name: "Food Shelter 3" },
+          { id: 4, lat: 13.065, lng: 80.275, name: "Food Shelter 4" },
         ],
         medicalCamps: [
-          { id: 1, lat: 51.51, lng: -0.085, name: "Medical Camp 1" },
-          { id: 2, lat: 51.505, lng: -0.095, name: "Medical Camp 2" },
+          { id: 1, lat: 13.082, lng: 80.28, name: "Medical Camp 1" },
+          { id: 2, lat: 13.085, lng: 80.29, name: "Medical Camp 2" },
+          { id: 3, lat: 13.075, lng: 80.26, name: "Medical Camp 3" },
+          { id: 4, lat: 13.07, lng: 80.25, name: "Medical Camp 4" },
+          { id: 5, lat: 13.09, lng: 80.265, name: "Medical Camp 5" },
+          { id: 6, lat: 13.06, lng: 80.255, name: "Medical Camp 6" },
+          { id: 7, lat: 13.1, lng: 80.27, name: "Medical Camp 7" },
         ],
         floodLevels: [
-          { id: 1, lat: 51.5, lng: -0.08, level: 0.5 },
-          { id: 2, lat: 51.51, lng: -0.09, level: 0.8 },
+          { id: 1, lat: 13.08, lng: 80.27, level: 0.4 },
+          { id: 2, lat: 13.085, lng: 80.28, level: 0.7 },
+          { id: 3, lat: 13.09, lng: 80.26, level: 0.6 },
+          { id: 4, lat: 13.075, lng: 80.25, level: 0.8 },
         ],
-        sosAlerts: [{ id: 1, lat: 51.515, lng: -0.085, message: "Help needed!" }],
+        sosAlerts: [
+          { id: 1, lat: 13.07, lng: 80.265, message: "Help needed!" },
+          { id: 2, lat: 13.085, lng: 80.275, message: "Urgent rescue required!" },
+        ],
       }
       setMapData(data)
     }
@@ -51,60 +87,60 @@ const Map = () => {
   }, [])
 
   return (
-    <MapContainer center={[51.505, -0.09]} zoom={13} style={{ height: "600px", width: "100%" }}>
-      <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+    <div>
+      <button
+        onClick={() => setShowFloodLevels(!showFloodLevels)}
+        style={{ marginBottom: "10px", padding: "10px", fontSize: "16px", cursor: "pointer" }}
+      >
+        {showFloodLevels ? "Hide Flood Levels" : "Show Flood Levels"}
+      </button>
 
-      {mapData.safeZones.map((zone) => (
-        <CircleMarker
-          key={zone.id}
-          center={[zone.lat, zone.lng]}
-          radius={20}
-          pathOptions={{ color: "green", fillColor: "green" }}
-        >
-          <Popup>{zone.name}</Popup>
-        </CircleMarker>
-      ))}
+      <MapContainer center={[13.0827, 80.2707]} zoom={12} style={{ height: "600px", width: "100%" }}>
+        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 
-      {mapData.foodShelters.map((shelter) => (
-        <Marker key={shelter.id} position={[shelter.lat, shelter.lng]}>
-          <Popup>{shelter.name}</Popup>
-        </Marker>
-      ))}
+        {/* Safe Zones */}
+        {mapData.safeZones.map((zone) => (
+          <Marker key={zone.id} position={[zone.lat, zone.lng]} icon={safeZoneIcon}>
+            <Popup>{zone.name}</Popup>
+          </Marker>
+        ))}
 
-      {mapData.medicalCamps.map((camp) => (
-        <CircleMarker
-          key={camp.id}
-          center={[camp.lat, camp.lng]}
-          radius={15}
-          pathOptions={{ color: "red", fillColor: "red" }}
-        >
-          <Popup>{camp.name}</Popup>
-        </CircleMarker>
-      ))}
+        {/* Food Shelters */}
+        {mapData.foodShelters.map((shelter) => (
+          <Marker key={shelter.id} position={[shelter.lat, shelter.lng]} icon={foodShelterIcon}>
+            <Popup>{shelter.name}</Popup>
+          </Marker>
+        ))}
 
-      {mapData.floodLevels.map((flood) => (
-        <CircleMarker
-          key={flood.id}
-          center={[flood.lat, flood.lng]}
-          radius={30}
-          pathOptions={{ color: "blue", fillColor: "blue", fillOpacity: flood.level }}
-        >
-          <Popup>Flood Level: {flood.level * 100}%</Popup>
-        </CircleMarker>
-      ))}
+        {/* Medical Camps */}
+        {mapData.medicalCamps.map((camp) => (
+          <Marker key={camp.id} position={[camp.lat, camp.lng]} icon={medicalCampIcon}>
+            <Popup>{camp.name}</Popup>
+          </Marker>
+        ))}
 
-      {mapData.sosAlerts.map((alert) => (
-        <Marker
-          key={alert.id}
-          position={[alert.lat, alert.lng]}
-          icon={L.icon({ iconUrl: "/sos-icon.png", iconSize: [32, 32] })}
-        >
-          <Popup>{alert.message}</Popup>
-        </Marker>
-      ))}
-    </MapContainer>
+        {/* Flood Levels - Only show if toggled on */}
+        {showFloodLevels &&
+          mapData.floodLevels.map((flood) => (
+            <CircleMarker
+              key={flood.id}
+              center={[flood.lat, flood.lng]}
+              radius={30}
+              pathOptions={{ color: "blue", fillColor: "blue", fillOpacity: flood.level }}
+            >
+              <Popup>Flood Level: {flood.level * 100}%</Popup>
+            </CircleMarker>
+          ))}
+
+        {/* SOS Alerts */}
+        {mapData.sosAlerts.map((alert) => (
+          <Marker key={alert.id} position={[alert.lat, alert.lng]} icon={sosIcon}>
+            <Popup>{alert.message}</Popup>
+          </Marker>
+        ))}
+      </MapContainer>
+    </div>
   )
 }
 
 export default Map
-

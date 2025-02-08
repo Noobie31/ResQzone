@@ -11,9 +11,35 @@ const BoatBookingForm = () => {
     urgency: "medium",
   })
 
+  const [loadingLocation, setLoadingLocation] = useState(false)
+
   const handleChange = (e) => {
     const { name, value } = e.target
     setFormData((prevData) => ({ ...prevData, [name]: value }))
+  }
+
+  const fetchLocation = () => {
+    if (!navigator.geolocation) {
+      alert("Geolocation is not supported by your browser")
+      return
+    }
+
+    setLoadingLocation(true)
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords
+        setFormData((prevData) => ({
+          ...prevData,
+          location: `${latitude}, ${longitude}`,
+        }))
+        setLoadingLocation(false)
+      },
+      (error) => {
+        alert("Failed to get location. Please enable GPS.")
+        setLoadingLocation(false)
+      }
+    )
   }
 
   const handleSubmit = async (e) => {
@@ -33,9 +59,7 @@ const BoatBookingForm = () => {
   return (
     <form onSubmit={handleSubmit} className="max-w-md mx-auto bg-white p-6 rounded-lg shadow">
       <div className="mb-4">
-        <label htmlFor="name" className="block mb-2">
-          Name
-        </label>
+        <label htmlFor="name" className="block mb-2">Name</label>
         <input
           type="text"
           id="name"
@@ -47,9 +71,7 @@ const BoatBookingForm = () => {
         />
       </div>
       <div className="mb-4">
-        <label htmlFor="phone" className="block mb-2">
-          Phone Number
-        </label>
+        <label htmlFor="phone" className="block mb-2">Phone Number</label>
         <input
           type="tel"
           id="phone"
@@ -61,23 +83,30 @@ const BoatBookingForm = () => {
         />
       </div>
       <div className="mb-4">
-        <label htmlFor="location" className="block mb-2">
-          Location
-        </label>
-        <input
-          type="text"
-          id="location"
-          name="location"
-          value={formData.location}
-          onChange={handleChange}
-          required
-          className="w-full px-3 py-2 border rounded"
-        />
+        <label htmlFor="location" className="block mb-2">Location</label>
+        <div className="flex">
+          <input
+            type="text"
+            id="location"
+            name="location"
+            value={formData.location}
+            onChange={handleChange}
+            required
+            className="w-full px-3 py-2 border rounded-l"
+            placeholder="Enter location or use GPS"
+          />
+          <button
+            type="button"
+            onClick={fetchLocation}
+            disabled={loadingLocation}
+            className="bg-gray-300 px-3 py-2 rounded-r hover:bg-gray-400"
+          >
+            {loadingLocation ? "Fetching..." : "📍"}
+          </button>
+        </div>
       </div>
       <div className="mb-4">
-        <label htmlFor="passengers" className="block mb-2">
-          Number of Passengers
-        </label>
+        <label htmlFor="passengers" className="block mb-2">Number of Passengers</label>
         <input
           type="number"
           id="passengers"
@@ -89,9 +118,7 @@ const BoatBookingForm = () => {
         />
       </div>
       <div className="mb-4">
-        <label htmlFor="urgency" className="block mb-2">
-          Urgency Level
-        </label>
+        <label htmlFor="urgency" className="block mb-2">Urgency Level</label>
         <select
           id="urgency"
           name="urgency"
@@ -113,4 +140,3 @@ const BoatBookingForm = () => {
 }
 
 export default BoatBookingForm
-
